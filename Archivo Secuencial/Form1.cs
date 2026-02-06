@@ -4,6 +4,8 @@ namespace Archivo_Secuencial
 {
     public partial class Form1 : Form
     {
+        private string archivoActual = ""; // Variable para guardar la ruta del archivo abierto
+
         public Form1()
         {
             InitializeComponent();
@@ -20,7 +22,7 @@ namespace Archivo_Secuencial
             dgvDatos.AllowUserToAddRows = true;
             dgvDatos.AllowUserToDeleteRows = true;
             dgvDatos.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            
+
             if (dgvDatos.Columns.Count == 0)
             {
                 dgvDatos.Columns.Add("Datos", "Datos");
@@ -30,7 +32,7 @@ namespace Archivo_Secuencial
             dgvPropiedades.AllowUserToAddRows = false;
             dgvPropiedades.AllowUserToDeleteRows = false;
             dgvPropiedades.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            
+
             if (dgvPropiedades.Columns.Count == 0)
             {
                 dgvPropiedades.Columns.Add("Propiedad", "Propiedad");
@@ -64,9 +66,20 @@ namespace Archivo_Secuencial
                         }
                     }
 
-                    string contenido = ObtenerContenidoDesdeDataGridView();
-                    File.WriteAllText(rutaArchivo, contenido);
+                    // Usar StreamWriter para escritura secuencial
+                    using (StreamWriter writer = new StreamWriter(rutaArchivo))
+                    {
+                        foreach (DataGridViewRow row in dgvDatos.Rows)
+                        {
+                            if (!row.IsNewRow && row.Cells[0].Value != null)
+                            {
+                                writer.WriteLine(row.Cells[0].Value.ToString());
+                            }
+                        }
+                    }
+
                     MessageBox.Show("Archivo creado exitosamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    archivoActual = rutaArchivo;
                     dgvDatos.Rows.Clear();
                 }
             }
@@ -74,19 +87,6 @@ namespace Archivo_Secuencial
             {
                 MessageBox.Show($"Error al crear el archivo: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-        }
-
-        private string ObtenerContenidoDesdeDataGridView()
-        {
-            string contenido = "";
-            foreach (DataGridViewRow row in dgvDatos.Rows)
-            {
-                if (!row.IsNewRow)
-                {
-                    contenido += row.Cells[0].Value?.ToString() + Environment.NewLine;
-                }
-            }
-            return contenido;
         }
 
         private void MoverArchivo()
@@ -161,6 +161,7 @@ namespace Archivo_Secuencial
                 }
 
                 File.Delete(filepath);
+                MessageBox.Show("Archivo eliminado exitosamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
 
             return true;
@@ -233,6 +234,167 @@ namespace Archivo_Secuencial
                 dgvPropiedades.Rows.Add("Ubicación", info.FullName);
                 dgvPropiedades.Rows.Add("Carpeta contenedora", info.DirectoryName);
             }
+        }
+
+        // ==================== NUEVAS funciones     MODIFICAR CONTENIDO DE UN ARCHIVO EDIRAR/GUARDAR CAMBIOS, VER LO QUE TIENE ====================
+
+        /// <summary>
+        /// Abre un archivo y muestra su contenido línea por línea en el DataGridView
+        /// Utiliza StreamReader para lectura secuencial
+        /// </summary>
+        private void AbrirArchivo()
+        {
+            try
+            {
+                OpenFileDialog openFileDialog1 = new OpenFileDialog();
+                openFileDialog1.Filter = "Archivos de texto (*.txt)|*.txt|Archivos CSV (*.csv)|*.csv|Archivos de datos (*.dat)|*.dat|Todos los archivos (*.*)|*.*";
+                openFileDialog1.Title = "Abrir archivo";
+
+                if (openFileDialog1.ShowDialog() == DialogResult.OK)
+                {
+                    string rutaArchivo = openFileDialog1.FileName;
+                    archivoActual = rutaArchivo;
+
+                    // limpiar el DataGridView antes de cargar
+                    dgvDatos.Rows.Clear();
+
+                    // usar StreamReader para lectura secuencial línea por línea
+                    using (StreamReader reader = new StreamReader(rutaArchivo))
+                    {
+                        string linea;
+                        int numeroLinea = 0;
+
+                        // leer el archivo línea por línea (secuencial)
+                        while ((linea = reader.ReadLine()) != null)
+                        {
+                            dgvDatos.Rows.Add(linea);
+                            numeroLinea++;
+                        }
+                    }
+
+                    MessageBox.Show($"Archivo abierto exitosamente.\nLíneas leídas: {dgvDatos.Rows.Count - 1}",
+                                    "Éxito",
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Information);
+
+                    
+                    this.Text = $"Archivos Secuenciales - {Path.GetFileName(rutaArchivo)}";
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al abrir el archivo: {ex.Message}",
+                               "Error",
+                               MessageBoxButtons.OK,
+                               MessageBoxIcon.Error);
+            }
+        }
+
+                                    //// NUEVA FUNCION PARA MODIFICAR CONTENIDO DE UN ARCHIVO ////
+        /// <summary>
+        /// Modifica el contenido de un archivo existente
+        /// Permite editar líneas, agregar nuevas o eliminar existentes
+        /// </summary>
+        private void ModificarArchivo()
+        {
+            try
+            {
+                // si no hay archivo abierto, preguntar cuál modificar
+                if (string.IsNullOrEmpty(archivoActual))
+                {
+                    OpenFileDialog openFileDialog1 = new OpenFileDialog();
+                    openFileDialog1.Filter = "Archivos de texto (*.txt)|*.txt|Archivos CSV (*.csv)|*.csv|Archivos de datos (*.dat)|*.dat|Todos los archivos (*.*)|*.*";
+                    openFileDialog1.Title = "Seleccionar archivo a modificar";
+
+                    if (openFileDialog1.ShowDialog() == DialogResult.OK)
+                    {
+                        archivoActual = openFileDialog1.FileName;
+
+                        // cargar el contenido actual
+                        dgvDatos.Rows.Clear();
+                        using (StreamReader reader = new StreamReader(archivoActual))
+                        {
+                            string linea;
+                            while ((linea = reader.ReadLine()) != null)
+                            {
+                                dgvDatos.Rows.Add(linea);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        return;
+                    }
+                }
+
+                // verificar que hay datos para guardar
+                if (dgvDatos.Rows.Count == 0 ||
+                    (dgvDatos.Rows.Count == 1 && dgvDatos.Rows[0].IsNewRow))
+                {
+                    MessageBox.Show("No hay datos para guardar.",
+                                   "Advertencia",
+                                   MessageBoxButtons.OK,
+                                   MessageBoxIcon.Warning);
+                    return;
+                }
+
+                // Confirmar modificación
+                DialogResult resultado = MessageBox.Show(
+                    $"¿Desea guardar los cambios en el archivo?\n{Path.GetFileName(archivoActual)}",
+                    "Confirmar modificación",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question);
+
+                if (resultado == DialogResult.Yes)
+                {
+                    // crear un archivo temporal para escritura segura
+                    string archivoTemporal = archivoActual + ".tmp";
+
+                    // escribir el contenido modificado usando StreamWriter
+                    using (StreamWriter writer = new StreamWriter(archivoTemporal))
+                    {
+                        foreach (DataGridViewRow row in dgvDatos.Rows)
+                        {
+                            if (!row.IsNewRow && row.Cells[0].Value != null)
+                            {
+                                writer.WriteLine(row.Cells[0].Value.ToString());
+                            }
+                        }
+                    }
+
+                    // REMPLAZAR el archivo original con el temporal
+                    if (File.Exists(archivoActual))
+                    {
+                        File.Delete(archivoActual);
+                    }
+                    File.Move(archivoTemporal, archivoActual);
+
+                    MessageBox.Show("Archivo modificado exitosamente.",
+                                   "Éxito",
+                                   MessageBoxButtons.OK,
+                                   MessageBoxIcon.Information);
+
+                    // axcctualizar el título del formulario para reflejar que el archivo ha sido modificado
+                    this.Text = $"Archivos Secuenciales - {Path.GetFileName(archivoActual)} [Modificado]";
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al modificar el archivo: {ex.Message}",
+                               "Error",
+                               MessageBoxButtons.OK,
+                               MessageBoxIcon.Error);
+            }
+        }
+
+        private void btnAbrir_Click(object sender, EventArgs e)
+        {
+            AbrirArchivo();
+        }
+
+        private void btnModificar_Click(object sender, EventArgs e)
+        {
+            ModificarArchivo();
         }
     }
 }

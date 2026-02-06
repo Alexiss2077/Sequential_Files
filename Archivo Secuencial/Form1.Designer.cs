@@ -24,7 +24,7 @@
 
         /// <summary>
         ///  Required method for Designer support - do not modify
-        ///  the contents of this method by the code editor.
+        ///  the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent()
         {
@@ -36,6 +36,8 @@
             btnVerPropiedades = new Button();
             dgvDatos = new DataGridView();
             dgvPropiedades = new DataGridView();
+            btnAbrir = new Button();
+            btnModificar = new Button();
             ((System.ComponentModel.ISupportInitialize)dgvDatos).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dgvPropiedades).BeginInit();
             SuspendLayout();
@@ -91,7 +93,7 @@
             // 
             // btnVerPropiedades
             // 
-            btnVerPropiedades.Location = new Point(862, 517);
+            btnVerPropiedades.Location = new Point(1090, 517);
             btnVerPropiedades.Name = "btnVerPropiedades";
             btnVerPropiedades.Size = new Size(210, 62);
             btnVerPropiedades.TabIndex = 6;
@@ -117,11 +119,33 @@
             dgvPropiedades.Size = new Size(618, 380);
             dgvPropiedades.TabIndex = 9;
             // 
+            // btnAbrir
+            // 
+            btnAbrir.Location = new Point(41, 610);
+            btnAbrir.Name = "btnAbrir";
+            btnAbrir.Size = new Size(180, 62);
+            btnAbrir.TabIndex = 10;
+            btnAbrir.Text = "Abrir Archivo";
+            btnAbrir.UseVisualStyleBackColor = true;
+            btnAbrir.Click += btnAbrir_Click;
+            // 
+            // btnModificar
+            // 
+            btnModificar.Location = new Point(862, 517);
+            btnModificar.Name = "btnModificar";
+            btnModificar.Size = new Size(200, 62);
+            btnModificar.TabIndex = 11;
+            btnModificar.Text = "Modificar Archivo";
+            btnModificar.UseVisualStyleBackColor = true;
+            btnModificar.Click += btnModificar_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1726, 724);
+            Controls.Add(btnModificar);
+            Controls.Add(btnAbrir);
             Controls.Add(dgvPropiedades);
             Controls.Add(dgvDatos);
             Controls.Add(btnVerPropiedades);
@@ -149,5 +173,7 @@
         private Button btnVerPropiedades;
         private DataGridView dgvDatos;
         private DataGridView dgvPropiedades;
+        private Button btnAbrir;
+        private Button btnModificar;
     }
 }
