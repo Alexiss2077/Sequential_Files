@@ -42,9 +42,9 @@
             // 
             // BtnCrearArchivo
             // 
-            BtnCrearArchivo.Location = new Point(650, 421);
+            BtnCrearArchivo.Location = new Point(41, 517);
             BtnCrearArchivo.Name = "BtnCrearArchivo";
-            BtnCrearArchivo.Size = new Size(138, 29);
+            BtnCrearArchivo.Size = new Size(180, 62);
             BtnCrearArchivo.TabIndex = 2;
             BtnCrearArchivo.Text = "Crear Archivo";
             BtnCrearArchivo.UseVisualStyleBackColor = true;
@@ -52,9 +52,9 @@
             // 
             // BtnMoverArchivo
             // 
-            BtnMoverArchivo.Location = new Point(489, 421);
+            BtnMoverArchivo.Location = new Point(444, 517);
             BtnMoverArchivo.Name = "BtnMoverArchivo";
-            BtnMoverArchivo.Size = new Size(155, 29);
+            BtnMoverArchivo.Size = new Size(178, 62);
             BtnMoverArchivo.TabIndex = 3;
             BtnMoverArchivo.Text = "Mover Archivo";
             BtnMoverArchivo.UseVisualStyleBackColor = true;
@@ -71,9 +71,9 @@
             // 
             // btnEliminar
             // 
-            btnEliminar.Location = new Point(337, 421);
+            btnEliminar.Location = new Point(236, 517);
             btnEliminar.Name = "btnEliminar";
-            btnEliminar.Size = new Size(146, 29);
+            btnEliminar.Size = new Size(175, 62);
             btnEliminar.TabIndex = 4;
             btnEliminar.Text = "Eliminar";
             btnEliminar.UseVisualStyleBackColor = true;
@@ -81,9 +81,9 @@
             // 
             // btnCopiar
             // 
-            btnCopiar.Location = new Point(185, 421);
+            btnCopiar.Location = new Point(655, 517);
             btnCopiar.Name = "btnCopiar";
-            btnCopiar.Size = new Size(146, 29);
+            btnCopiar.Size = new Size(169, 62);
             btnCopiar.TabIndex = 5;
             btnCopiar.Text = "Copiar";
             btnCopiar.UseVisualStyleBackColor = true;
@@ -91,11 +91,11 @@
             // 
             // btnVerPropiedades
             // 
-            btnVerPropiedades.Location = new Point(33, 421);
+            btnVerPropiedades.Location = new Point(862, 517);
             btnVerPropiedades.Name = "btnVerPropiedades";
-            btnVerPropiedades.Size = new Size(146, 29);
+            btnVerPropiedades.Size = new Size(210, 62);
             btnVerPropiedades.TabIndex = 6;
-            btnVerPropiedades.Text = "ver propiedades";
+            btnVerPropiedades.Text = "Ver propiedades";
             btnVerPropiedades.UseVisualStyleBackColor = true;
             btnVerPropiedades.Click += btnVerPropiedades_Click;
             // 
@@ -114,7 +114,7 @@
             dgvPropiedades.Location = new Point(930, 35);
             dgvPropiedades.Name = "dgvPropiedades";
             dgvPropiedades.RowHeadersWidth = 51;
-            dgvPropiedades.Size = new Size(484, 380);
+            dgvPropiedades.Size = new Size(618, 380);
             dgvPropiedades.TabIndex = 9;
             // 
             // Form1
